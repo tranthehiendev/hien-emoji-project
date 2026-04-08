@@ -3,9 +3,12 @@ import dotenv from 'dotenv';
 import { connectDB } from './libs/db.js';
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import friendRoutes from './routes/friendRoutes.js'
 import cookieParser from 'cookie-parser'
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors'
+import messageRoutes from './routes/messageRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js'
 
 dotenv.config();
 
@@ -23,7 +26,9 @@ app.use('/api/auth', authRoutes);
 //private router
 app.use(protectedRoute)
 app.use('/api/users', userRoutes);
-
+app.use('/api/friends',friendRoutes)
+app.use('/api/messages',messageRoutes)
+app.use('/api/conversations',conversationRoutes)
 
 
 
