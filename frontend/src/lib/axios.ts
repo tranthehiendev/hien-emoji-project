@@ -3,7 +3,7 @@ import axios from 'axios'
 
 
 const api = axios.create({
-    baseURL: import.meta.env.MODE === 'development' ? "http://localhost:5001/api" : "/api",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 })
 //gan access token vao req header
@@ -26,7 +26,7 @@ api.interceptors.response.use((res) => res, async (error) => {
     if (error.response?.status === 403 && originalRequest._retryCount < 4) {
         originalRequest._retryCount+=1;
         try {
-            const res = await api.post("/auth/refresh", { withCredentials: true });
+            const res = await api.post("/auth/refresh",{withCredentials: true});
             const newAccessToken = res.data.accessToken;
             useAuthStore.getState().setAccessToken(newAccessToken)
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

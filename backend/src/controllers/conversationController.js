@@ -96,17 +96,29 @@ export const getMessages = async (req, res) => {
             query.createdAt = { $lt: new Date(cursor) }
         }
         let messages = await Message.find(query).sort({ createdAt: -1 }).limit(Number(limit) + 1)
-        let nextCursor =null;
-        if(messages.length>Number(limit)){
-            const nextMessage = messages[messages.length -1];
-            nextCursor=nextMessage.createdAt.toISOString()
+        let nextCursor = null;
+        if (messages.length > Number(limit)) {
+            const nextMessage = messages[messages.length - 1];
+            nextCursor = nextMessage.createdAt.toISOString()
             messages.pop()
         }
 
-        messages=messages.reverse()
-        return res.status(200).json({message, nextCursor})
+        messages = messages.reverse()
+        return res.status(200).json({ messages, nextCursor })
     } catch (error) {
-        console.error("Lỗi khi lấy message",error);
-        return res.status(500).json({message:'Lỗi hệ thống!'})
+        console.error("Lỗi khi lấy message", error);
+        return res.status(500).json({ message: 'Lỗi hệ thống!' })
+    }
+}
+export const getUserConversationsForSocketIO = async (userId) => {
+    try {
+        const conversations = await Conversation.find(
+            { "participants.userId": userId },
+            { _id: 1 }
+        )
+        return conversations.map((c) => c._id.toString());
+    } catch (error) {
+        console.error("Lỗi khi Fetch conversations: ", error);
+        return [];
     }
 }

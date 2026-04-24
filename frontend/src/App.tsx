@@ -2,13 +2,30 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import ChatAppPage from './pages/ChatAppPage';
-import {Toaster} from 'sonner'
+import { Toaster } from 'sonner'
 import ProtectedRoute from './components/auth/ProtectedRoute';
-
+import { TooltipProvider } from './components/ui/tooltip';
+import { userThemeStore } from './stores/useThemeStore';
+import { useEffect } from 'react';
+import { useAuthStore } from './stores/useAuthStore';
+import { useSocketStore } from './stores/useSocketStore';
 function App() {
+  const { isDark, setTheme } = userThemeStore();
+  const { accessToken } = useAuthStore();
+  const { connectSocket, disconnectSocket } = useSocketStore()
+  useEffect(() => {
+    setTheme(isDark);
+  }, [isDark])
+  useEffect(() => {
+    if (accessToken){
+      connectSocket();
+    }
+    return ()=>disconnectSocket(); 
+  }, [accessToken])
+
   return (
-    <>
-    <Toaster richColors/>
+    <TooltipProvider>
+      <Toaster richColors />
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
@@ -21,17 +38,17 @@ function App() {
             element={<SignUpPage />}
           />
           {/* Protected routes */}
-          <Route element={<ProtectedRoute/>}>
+          <Route element={<ProtectedRoute />}>
 
-          <Route
-            path='/'
-            element={<ChatAppPage />}
-          />
+            <Route
+              path='/'
+              element={<ChatAppPage />}
+            />
           </Route>
 
         </Routes>
       </BrowserRouter>
-    </>
+    </TooltipProvider>
   )
 }
 

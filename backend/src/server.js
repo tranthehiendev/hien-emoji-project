@@ -9,10 +9,10 @@ import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors'
 import messageRoutes from './routes/messageRoutes.js';
 import conversationRoutes from './routes/conversationRoutes.js'
+import {app, server } from "./socket/index.js"
 
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT || 5001;
 
 //middlewares
@@ -33,7 +33,7 @@ app.use('/api/conversations',conversationRoutes)
 
 
 connectDB().then(() => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server bắt đầu trên cổng ${PORT}`)
     });
 });
