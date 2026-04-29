@@ -19,8 +19,9 @@ export const useAuthStore = create<AuthState>()(
                     user: null,
                     loading: false,
                 });
-                localStorage.clear();
                 useChatStore.getState().reset();
+                localStorage.clear();
+                sessionStorage.clear();
             },
             signUp: async (username, password, email, firstname, lastname) => {
                 try {
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthState>()(
             },
             signIn: async (username, password) => {
                 try {
+                    get().clearState();
                     set({ loading: true })
                     //goi api 
                     localStorage.clear();
